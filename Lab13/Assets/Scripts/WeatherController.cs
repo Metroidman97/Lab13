@@ -49,18 +49,18 @@ public class WeatherController : MonoBehaviour
         //Debug.Log(data);
 
         float temperature = 0;
-        string precipitation = null;
+        string weather = null;
 
         XDocument xml = XDocument.Parse(data);
 
         foreach (XElement item in xml.Elements())
         {
             temperature = (float)item.Element("temperature").Attribute("value");
-            precipitation = (string)item.Element("precipitation").Attribute("mode");
-            //Debug.Log(temperature + " " + precipitation);
+            weather = (string)item.Element("weather").Attribute("value");
         }
 
-        Debug.Log(temperature + " " + precipitation);
+        Debug.Log(temperature + " " + weather);
+        ChangeSkybox(weather);
     }
 
     public string GetCityUrl(string city)
@@ -81,6 +81,29 @@ public class WeatherController : MonoBehaviour
                 Debug.Log("Invalid city name");
                 return null;
         }
+    }
+
+    private void ChangeSkybox(string weather)
+    {
+        switch (weather)
+        {
+            case "rain":
+            case "drizzle":
+            case "thunderstorm":
+                RenderSettings.skybox = rainySkybox;
+                break;
+            case "snow":
+                RenderSettings.skybox = snowySkybox;
+                break;
+            default:
+                RenderSettings.skybox = daySkybox;
+                break;
+        }
+    }
+
+    private void ChangeSunlight(float temperature)
+    {
+
     }
 }
 
