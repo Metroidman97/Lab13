@@ -5,7 +5,7 @@ using UnityEngine.Networking;
 
 public class WeatherManager
 {
-    private const string xmlApi = "";
+    //private const string xmlApi = "http://api.openweathermap.org/data/2.5/weather?q=Orlando,us&mode=xml&appid=c3d9363a656059d0f57a915c349a70d9";
 
     private IEnumerator CallAPI(string url, Action<string> callback)
     {
@@ -27,7 +27,7 @@ public class WeatherManager
         }
     }
 
-    public IEnumerator GetWeatherXML(Action<string> callback)
+    public IEnumerator GetWeatherXML(Action<string> callback, string xmlApi)
     {
         return CallAPI(xmlApi, callback);
     }
