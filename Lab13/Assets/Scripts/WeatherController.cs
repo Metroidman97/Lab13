@@ -1,4 +1,5 @@
 #if UNITY_EDITOR
+using NUnit.Framework.Api;
 using System.Xml.Linq;
 using UnityEditor;
 #endif
@@ -48,18 +49,20 @@ public class WeatherController : MonoBehaviour
     {
         //Debug.Log(data);
 
-        float temperature = 0;
+        float clouds = 0;
         string weather = null;
 
         XDocument xml = XDocument.Parse(data);
 
+        // Specifically look for the clouds and precipitation values
         foreach (XElement item in xml.Elements())
         {
-            temperature = (float)item.Element("temperature").Attribute("value");
-            weather = (string)item.Element("weather").Attribute("value");
+            clouds = (float)item.Element("clouds").Attribute("value");
+            weather = (string)item.Element("precipitation").Attribute("mode");
         }
 
-        Debug.Log(temperature + " " + weather);
+        Debug.Log("Cloud value: " + clouds + ", Precipitation mode: " + weather);
+        ChangeSunlight(clouds);
         ChangeSkybox(weather);
     }
 
@@ -85,11 +88,10 @@ public class WeatherController : MonoBehaviour
 
     private void ChangeSkybox(string weather)
     {
+        // Change the skybox if it's rainy or snowy. Otherwise, use the default day skybox
         switch (weather)
         {
             case "rain":
-            case "drizzle":
-            case "thunderstorm":
                 RenderSettings.skybox = rainySkybox;
                 break;
             case "snow":
@@ -101,9 +103,10 @@ public class WeatherController : MonoBehaviour
         }
     }
 
-    private void ChangeSunlight(float temperature)
+    private void ChangeSunlight(float clouds)
     {
-
+        // Darken the skylight the more cloud cover there is
+        skyLight.intensity = 10 - clouds/10;
     }
 }
 
